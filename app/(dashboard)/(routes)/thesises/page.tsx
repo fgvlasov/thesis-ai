@@ -6,8 +6,8 @@ const ThesisesPage = () => {
   	return (
 		<div>
 			<Heading
-			title="Conversation"
-			description="Our most advanced conversation model."
+			title="Generate Thesis"
+			description="Our most advanced thesis generation model."
 			icon={MessageSquare}
 			iconColor="text-violet-500"
 			bgColor="bg-violet-500/10"
