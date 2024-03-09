@@ -1,8 +1,11 @@
-[About the Project](ABOUT.md)
+### [About the Project](ABOUT.md)
+
 Students of Master of Full Stack Software Development group 2023-2025
 
 - Vlasov Fedor AD9348 [Fedor GitLab Page](https://gitlab.labranet.jamk.fi/AD9348)
 - Mohajer Ehsan AE9190 [Ehsan GitLab Page](https://gitlab.labranet.jamk.fi/AE9190)
+
+### [Plan of creating in Planner](https://tasks.office.com/jamkstudent.onmicrosoft.com/Home/PlanViews/OxCI0Eba2UO6C95STwbrc5YAClH5?Type=PlanLink&Channel=Link&CreatedTime=638455683199890000)
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
