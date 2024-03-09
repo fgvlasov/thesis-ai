@@ -1,3 +1,9 @@
+[About the Project](ABOUT.md)
+Students of Master of Full Stack Software Development group 2023-2025
+
+- Vlasov Fedor AD9348 [Fedor GitLab Page](https://gitlab.labranet.jamk.fi/AD9348)
+- Mohajer Ehsan AE9190 [Ehsan GitLab Page](https://gitlab.labranet.jamk.fi/AE9190)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
@@ -6,12 +12,6 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
