@@ -12,17 +12,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Empty } from "@/components/ui/empty";
 import { useState } from "react";
-import { ChatCompletionRequestMessage } from "openai";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
+interface ChatMessage {
+  role: "user" | "system"; // Assuming these are your message source types
+  content: string; // The text content of the message
+}
+
 const ThesisesPage = () => {
   const router = useRouter();
-  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      prompt: "",
+      //prompt: "",
+      specialty: "",
+      expertise: "",
+      interests: "",
+      fieldOfResearch: "",
     },
   });
 
@@ -30,11 +38,19 @@ const ThesisesPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const userMessage: ChatCompletionRequestMessage = {
+      // Aggregate all form fields into one comprehensive prompt
+      const fullPrompt =
+        `Write 3 examples of Thesises for diploma for Specialty: ${values.specialty}` +
+        `, for a student whom expertise is ${values.expertise}` +
+        `, his interests are ${values.interests}` +
+        `, in the field of Research: ${values.fieldOfResearch}`;
+      const userMessage: ChatMessage = {
         role: "user",
-        content: values.prompt,
+        content: fullPrompt,
       };
       const newMessages = [...messages, userMessage];
+
+      console.log(newMessages);
 
       const response = await axios.post("/api/thesises", {
         messages: newMessages,
@@ -79,7 +95,7 @@ const ThesisesPage = () => {
                 gap-2
               "
             >
-              <FormField
+              {/* <FormField
                 name="prompt"
                 render={({ field }) => (
                   <FormItem className="col-span-12 lg:col-span-10">
@@ -88,6 +104,66 @@ const ThesisesPage = () => {
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
                         placeholder="Where to find a job?"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              /> */}
+              {/* Specialty field */}
+              <FormField
+                name="specialty"
+                render={({ field }) => (
+                  <FormItem className="col-span-12">
+                    <FormControl className="m-0 p-0">
+                      <Input
+                        disabled={isLoading}
+                        placeholder="Specialty"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              {/* Expertise field */}
+              <FormField
+                name="expertise"
+                render={({ field }) => (
+                  <FormItem className="col-span-12">
+                    <FormControl className="m-0 p-0">
+                      <Input
+                        disabled={isLoading}
+                        placeholder="Expertise"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              {/* Interests field */}
+              <FormField
+                name="interests"
+                render={({ field }) => (
+                  <FormItem className="col-span-12">
+                    <FormControl className="m-0 p-0">
+                      <Input
+                        disabled={isLoading}
+                        placeholder="Interests"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              {/* Field of Research */}
+              <FormField
+                name="fieldOfResearch"
+                render={({ field }) => (
+                  <FormItem className="col-span-12">
+                    <FormControl className="m-0 p-0">
+                      <Input
+                        disabled={isLoading}
+                        placeholder="Field of Research"
                         {...field}
                       />
                     </FormControl>
