@@ -14,6 +14,7 @@ import { Empty } from "@/components/ui/empty";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import ReactMarkdown from "react-markdown";
 
 interface ChatMessage {
   role: "user" | "system"; // Assuming these are your message source types
@@ -40,10 +41,15 @@ const ThesisesPage = () => {
     try {
       // Aggregate all form fields into one comprehensive prompt
       const fullPrompt =
-        `Write 3 examples of Thesises for diploma for Specialty: ${values.specialty}` +
+        `Answer in md code. Imagine that you a teacher student tutor helping to student to write 3 examples of Thesises (later in link i will insert this like a THESIS_TITLE) for diploma for Specialty: ${values.specialty}` +
         `, for a student whom expertise is ${values.expertise}` +
         `, his interests are ${values.interests}` +
-        `, in the field of Research: ${values.fieldOfResearch}`;
+        `, in the field of Research: ${values.fieldOfResearch}` +
+        `, analyze existing topics on the Internet and select the most relevant and relevant theses to modern trends,
+		 also add a link for each opening in new tab like: 
+		 -- THESIS_TITLE - [Check in Theseus.fi](https://www.theseus.fi/discover?scope=%2F&query=THESIS_TITLE)
+		 Also make second same list with links but translate to finnish language. 
+		 `;
       const userMessage: ChatMessage = {
         role: "user",
         content: fullPrompt,
@@ -197,7 +203,7 @@ const ThesisesPage = () => {
                 className="p-8 w-full flex items-start gap-x-8 rounded-lg"
               >
                 {message.role}
-                <p className="text-sm">{message.content}</p>
+                <ReactMarkdown>{message.content}</ReactMarkdown>
               </div>
             ))}
           </div>
