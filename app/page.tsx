@@ -1,9 +1,7 @@
 "use client";
 
-import { MessageSquare } from "lucide-react";
 import { Heading } from "@/components/heading";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formSchema } from "./constants";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import axios from "axios";
@@ -14,6 +12,16 @@ import { Empty } from "@/components/ui/empty";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+
+const formSchema = z.object({
+  //   prompt: z.string().min(1, {
+  //     message: "Prompt is required.",
+  //   }),
+  specialty: z.string(),
+  expertise: z.string(),
+  interests: z.string(),
+  fieldOfResearch: z.string(),
+});
 
 interface ChatMessage {
   role: "user" | "system"; // Assuming these are your message source types
@@ -52,7 +60,7 @@ const ThesisesPage = () => {
 
       console.log(newMessages);
 
-      const response = await axios.post("/api/thesises", {
+      const response = await axios.post("/api/", {
         messages: newMessages,
       });
       setMessages((current) => [...current, userMessage, response.data]);
@@ -70,21 +78,19 @@ const ThesisesPage = () => {
 
   return (
     <div>
-      <Heading
-        title="Generate Thesis"
-        description="Our most advanced thesis generation model."
-        icon={MessageSquare}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
-      />
+      <h1 className="text-6xl font-bold uppercase text-center my-20 mx-10 text-gradient">
+        Generate thesis with AI
+      </h1>
+      <p className=" text-center my-20 mx-10">
+        We help to student generating three thesis ideas, giving you links to
+        find the same between other thesises and articles.
+      </p>
       <div className="px-4 lg:px-8">
         <div>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className="
-                rounded-lg 
-                border 
                 w-full 
                 p-4 
                 px-3 
@@ -92,30 +98,15 @@ const ThesisesPage = () => {
                 focus-within:shadow-sm
                 grid
                 grid-cols-12
-                gap-2
+                gap-4
               "
             >
-              {/* <FormField
-                name="prompt"
-                render={({ field }) => (
-                  <FormItem className="col-span-12 lg:col-span-10">
-                    <FormControl className="m-0 p-0">
-                      <Input
-                        className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-                        disabled={isLoading}
-                        placeholder="Where to find a job?"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              /> */}
               {/* Specialty field */}
               <FormField
                 name="specialty"
                 render={({ field }) => (
-                  <FormItem className="col-span-12">
-                    <FormControl className="m-0 p-0">
+                  <FormItem className="col-span-12 md:col-span-6">
+                    <FormControl className="m-0 p-2">
                       <Input
                         disabled={isLoading}
                         placeholder="Specialty"
@@ -129,8 +120,8 @@ const ThesisesPage = () => {
               <FormField
                 name="expertise"
                 render={({ field }) => (
-                  <FormItem className="col-span-12">
-                    <FormControl className="m-0 p-0">
+                  <FormItem className="col-span-12 md:col-span-6">
+                    <FormControl className="m-0 p-2">
                       <Input
                         disabled={isLoading}
                         placeholder="Expertise"
@@ -144,8 +135,8 @@ const ThesisesPage = () => {
               <FormField
                 name="interests"
                 render={({ field }) => (
-                  <FormItem className="col-span-12">
-                    <FormControl className="m-0 p-0">
+                  <FormItem className="col-span-12 md:col-span-6">
+                    <FormControl className="m-0 p-2">
                       <Input
                         disabled={isLoading}
                         placeholder="Interests"
@@ -159,8 +150,8 @@ const ThesisesPage = () => {
               <FormField
                 name="fieldOfResearch"
                 render={({ field }) => (
-                  <FormItem className="col-span-12">
-                    <FormControl className="m-0 p-0">
+                  <FormItem className="col-span-12 md:col-span-6">
+                    <FormControl className="m-0 p-2">
                       <Input
                         disabled={isLoading}
                         placeholder="Field of Research"
@@ -171,16 +162,17 @@ const ThesisesPage = () => {
                 )}
               />
               <Button
-                className="col-span-12 lg:col-span-2 w-full"
+                className="col-span-12 lg:col-span-4 lg:col-start-5 w-full bg-custom-gradient rounded-buttonRadius color-black text-1xl"
                 type="submit"
                 disabled={isLoading}
                 size="icon"
               >
-                Find
+                GENERATE
               </Button>
             </form>
           </Form>
         </div>
+
         <div className="space-y-4 mt-4">
           {isLoading && (
             <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
