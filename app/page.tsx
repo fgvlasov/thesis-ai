@@ -9,9 +9,12 @@ import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Empty } from '@/components/ui/empty';
+import { Files } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
+import ThesisItem from '@/components/thesis-item';
 
 const formSchema = z.object({
   //   prompt: z.string().min(1, {
@@ -54,7 +57,7 @@ const ThesisesPage = () => {
         `, his interests are ${values.interests}` +
         `, analyze existing topics on the Internet in the field of Research: ${values.fieldOfResearch} ` +
         ` and select the most relevant and relevant theses to modern trends.
-		 Break your answer to a json object thesis_examples with brackets, because we will render it like json. 
+		 Break your answer to a json object thesis_examples with brackets, no list numbers, because we will render it like json. 
 		 Also make second json list thesis_examples_translation with translation to finnish language. `;
 
       const userMessage: ChatMessage = {
@@ -82,7 +85,7 @@ const ThesisesPage = () => {
   };
 
   return (
-    <div>
+    <div className="max-w-5xl mx-auto">
       <h1 className="text-6xl font-bold uppercase text-center my-20 mx-10 text-gradient">
         Generate thesis with AI
       </h1>
@@ -191,60 +194,41 @@ const ThesisesPage = () => {
             {messages.map((message) => (
               <div
                 key={message.content}
-                className="p-8 w-full flex items-start gap-x-8 rounded-lg"
+                className="p-8 w-full flex flex-col items-start gap-x-8 rounded-lg"
               >
-                {message.role}
-                <p className="text-sm">{message.content}</p>
                 {(() => {
                   try {
                     const jsonData = JSON.parse(message.content);
                     return (
                       <>
-                        <p>Thesis Examples:</p>
                         <div>
+                          <h3 className="text-lg font-bold my-4 mx-12">
+                            Thesis Examples:
+                          </h3>
+
                           {jsonData.thesis_examples?.map(
                             (thesis: string, idx: number) => (
-                              <div key={idx}>
-                                {thesis} - [
-                                <a
-                                  target="_blank"
-                                  href={`https://www.theseus.fi/discover?query=${thesis}`}
-                                >
-                                  Check in Theseus.fi
-                                </a>
-                                ] - [
-                                <a
-                                  target="_blank"
-                                  href={`https://scholar.google.com/scholar?hl=en&q=${thesis}`}
-                                >
-                                  Check in Google Scholar
-                                </a>
-                                ]
-                              </div>
+                              <ThesisItem
+                                thesis={thesis}
+                                idx={idx}
+                                lang="en"
+                                key={idx}
+                              />
                             )
                           )}
                         </div>
-                        <p>Translations:</p>
                         <div>
+                          <h3 className="text-lg font-bold my-4 mx-12">
+                            Thesis Examples in Finnish:
+                          </h3>
                           {jsonData.thesis_examples_translation?.map(
                             (translation: string, idx: number) => (
-                              <div key={idx}>
-                                {translation} - [
-                                <a
-                                  target="_blank"
-                                  href={`https://www.theseus.fi/discover?query=${translation}`}
-                                >
-                                  Check in Theseus.fi
-                                </a>
-                                ] - [
-                                <a
-                                  target="_blank"
-                                  href={`https://scholar.google.com/scholar?hl=en&q=${translation}`}
-                                >
-                                  Check in Google Scholar
-                                </a>
-                                ]
-                              </div>
+                              <ThesisItem
+                                thesis={translation}
+                                idx={idx}
+                                lang="fi"
+                                key={idx}
+                              />
                             )
                           )}
                         </div>
