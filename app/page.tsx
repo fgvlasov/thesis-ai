@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { Heading } from "@/components/heading";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import axios from "axios";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Empty } from "@/components/ui/empty";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+import { Heading } from '@/components/heading';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import axios from 'axios';
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Empty } from '@/components/ui/empty';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 const formSchema = z.object({
   //   prompt: z.string().min(1, {
@@ -24,7 +24,7 @@ const formSchema = z.object({
 });
 
 interface ChatMessage {
-  role: "user" | "system"; // Assuming these are your message source types
+  role: 'user' | 'system'; // Assuming these are your message source types
   content: string; // The text content of the message
 }
 
@@ -35,10 +35,10 @@ const ThesisesPage = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       //prompt: "",
-      specialty: "",
-      expertise: "",
-      interests: "",
-      fieldOfResearch: "",
+      specialty: '',
+      expertise: '',
+      interests: '',
+      fieldOfResearch: '',
     },
   });
 
@@ -48,19 +48,24 @@ const ThesisesPage = () => {
     try {
       // Aggregate all form fields into one comprehensive prompt
       const fullPrompt =
-        `Write 3 examples of Thesises for diploma for Specialty: ${values.specialty}` +
+        `Imagine that you a teacher student tutor helping to student to write 3 examples 
+		of Thesises (later in link i will insert this like a THESIS_TITLE) for diploma for Specialty: ${values.specialty}` +
         `, for a student whom expertise is ${values.expertise}` +
         `, his interests are ${values.interests}` +
-        `, in the field of Research: ${values.fieldOfResearch}`;
+        `, analyze existing topics on the Internet in the field of Research: ${values.fieldOfResearch} ` +
+        ` and select the most relevant and relevant theses to modern trends.
+		 Break your answer to a json object thesis_examples with brackets, because we will render it like json. 
+		 Also make second json list thesis_examples_translation with translation to finnish language. `;
+
       const userMessage: ChatMessage = {
-        role: "user",
-        content: fullPrompt,
+        role: 'user',
+        content: JSON.stringify(fullPrompt),
       };
       const newMessages = [...messages, userMessage];
 
-      console.log(newMessages);
+      console.log(messages);
 
-      const response = await axios.post("/api/", {
+      const response = await axios.post('/api/', {
         messages: newMessages,
       });
       setMessages((current) => [...current, userMessage, response.data]);
@@ -69,7 +74,7 @@ const ThesisesPage = () => {
     } catch (error: any) {
       if (error?.response?.status === 403) {
       } else {
-        toast.error("Something went wrong.");
+        toast.error('Something went wrong.');
       }
     } finally {
       router.refresh();
@@ -190,6 +195,65 @@ const ThesisesPage = () => {
               >
                 {message.role}
                 <p className="text-sm">{message.content}</p>
+                {(() => {
+                  try {
+                    const jsonData = JSON.parse(message.content);
+                    return (
+                      <>
+                        <p>Thesis Examples:</p>
+                        <div>
+                          {jsonData.thesis_examples?.map(
+                            (thesis: string, idx: number) => (
+                              <div key={idx}>
+                                {thesis} - [
+                                <a
+                                  target="_blank"
+                                  href={`https://www.theseus.fi/discover?query=${thesis}`}
+                                >
+                                  Check in Theseus.fi
+                                </a>
+                                ] - [
+                                <a
+                                  target="_blank"
+                                  href={`https://scholar.google.com/scholar?hl=en&q=${thesis}`}
+                                >
+                                  Check in Google Scholar
+                                </a>
+                                ]
+                              </div>
+                            )
+                          )}
+                        </div>
+                        <p>Translations:</p>
+                        <div>
+                          {jsonData.thesis_examples_translation?.map(
+                            (translation: string, idx: number) => (
+                              <div key={idx}>
+                                {translation} - [
+                                <a
+                                  target="_blank"
+                                  href={`https://www.theseus.fi/discover?query=${translation}`}
+                                >
+                                  Check in Theseus.fi
+                                </a>
+                                ] - [
+                                <a
+                                  target="_blank"
+                                  href={`https://scholar.google.com/scholar?hl=en&q=${translation}`}
+                                >
+                                  Check in Google Scholar
+                                </a>
+                                ]
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </>
+                    );
+                  } catch (e) {
+                    return <p>Error parsing AI response.</p>;
+                  }
+                })()}
               </div>
             ))}
           </div>
