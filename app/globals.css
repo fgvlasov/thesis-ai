@@ -92,3 +92,7 @@
 .color-black {
   color: hsl(var(--background));
 }
+
+a {
+  text-decoration: underline;
+}

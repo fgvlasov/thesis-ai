@@ -1,17 +1,20 @@
-"use client";
+'use client';
 
-import { Heading } from "@/components/heading";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import axios from "axios";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Empty } from "@/components/ui/empty";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+import { Heading } from '@/components/heading';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import axios from 'axios';
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Empty } from '@/components/ui/empty';
+import { Files } from 'lucide-react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import Link from 'next/link';
+import ThesisItem from '@/components/thesis-item';
 
 const formSchema = z.object({
   //   prompt: z.string().min(1, {
@@ -24,7 +27,7 @@ const formSchema = z.object({
 });
 
 interface ChatMessage {
-  role: "user" | "system"; // Assuming these are your message source types
+  role: 'user' | 'system'; // Assuming these are your message source types
   content: string; // The text content of the message
 }
 
@@ -35,10 +38,10 @@ const ThesisesPage = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       //prompt: "",
-      specialty: "",
-      expertise: "",
-      interests: "",
-      fieldOfResearch: "",
+      specialty: '',
+      expertise: '',
+      interests: '',
+      fieldOfResearch: '',
     },
   });
 
@@ -48,19 +51,24 @@ const ThesisesPage = () => {
     try {
       // Aggregate all form fields into one comprehensive prompt
       const fullPrompt =
-        `Write 3 examples of Thesises for diploma for Specialty: ${values.specialty}` +
+        `Imagine that you a teacher student tutor helping to student to write 3 examples 
+		of Thesises (later in link i will insert this like a THESIS_TITLE) for diploma for Specialty: ${values.specialty}` +
         `, for a student whom expertise is ${values.expertise}` +
         `, his interests are ${values.interests}` +
-        `, in the field of Research: ${values.fieldOfResearch}`;
+        `, analyze existing topics on the Internet in the field of Research: ${values.fieldOfResearch} ` +
+        ` and select the most relevant and relevant theses to modern trends.
+		 Break your answer to a json object thesis_examples with brackets, no list numbers, because we will render it like json. 
+		 Also make second json list thesis_examples_translation with translation to finnish language. `;
+
       const userMessage: ChatMessage = {
-        role: "user",
-        content: fullPrompt,
+        role: 'user',
+        content: JSON.stringify(fullPrompt),
       };
       const newMessages = [...messages, userMessage];
 
-      console.log(newMessages);
+      console.log(messages);
 
-      const response = await axios.post("/api/", {
+      const response = await axios.post('/api/', {
         messages: newMessages,
       });
       setMessages((current) => [...current, userMessage, response.data]);
@@ -69,7 +77,7 @@ const ThesisesPage = () => {
     } catch (error: any) {
       if (error?.response?.status === 403) {
       } else {
-        toast.error("Something went wrong.");
+        toast.error('Something went wrong.');
       }
     } finally {
       router.refresh();
@@ -77,7 +85,7 @@ const ThesisesPage = () => {
   };
 
   return (
-    <div>
+    <div className="max-w-5xl mx-auto">
       <h1 className="text-6xl font-bold uppercase text-center my-20 mx-10 text-gradient">
         Generate thesis with AI
       </h1>
@@ -186,10 +194,50 @@ const ThesisesPage = () => {
             {messages.map((message) => (
               <div
                 key={message.content}
-                className="p-8 w-full flex items-start gap-x-8 rounded-lg"
+                className="p-8 w-full flex flex-col items-start gap-x-8 rounded-lg"
               >
-                {message.role}
-                <p className="text-sm">{message.content}</p>
+                {(() => {
+                  try {
+                    const jsonData = JSON.parse(message.content);
+                    return (
+                      <>
+                        <div>
+                          <h3 className="text-lg font-bold my-4 mx-12">
+                            Thesis Examples:
+                          </h3>
+
+                          {jsonData.thesis_examples?.map(
+                            (thesis: string, idx: number) => (
+                              <ThesisItem
+                                thesis={thesis}
+                                idx={idx}
+                                lang="en"
+                                key={idx}
+                              />
+                            )
+                          )}
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold my-4 mx-12">
+                            Thesis Examples in Finnish:
+                          </h3>
+                          {jsonData.thesis_examples_translation?.map(
+                            (translation: string, idx: number) => (
+                              <ThesisItem
+                                thesis={translation}
+                                idx={idx}
+                                lang="fi"
+                                key={idx}
+                              />
+                            )
+                          )}
+                        </div>
+                      </>
+                    );
+                  } catch (e) {
+                    return <p>Error parsing AI response.</p>;
+                  }
+                })()}
               </div>
             ))}
           </div>
