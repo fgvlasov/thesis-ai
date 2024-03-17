@@ -1,6 +1,5 @@
 'use client';
 
-import { Heading } from '@/components/heading';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -9,12 +8,14 @@ import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Empty } from '@/components/ui/empty';
-import { Files } from 'lucide-react';
+import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import Link from 'next/link';
+
 import ThesisItem from '@/components/thesis-item';
+import { Card, CardFooter } from '@/components/ui/card';
+import { Download } from 'lucide-react';
 
 const formSchema = z.object({
   //   prompt: z.string().min(1, {
@@ -34,6 +35,8 @@ interface ChatMessage {
 const ThesisesPage = () => {
   const router = useRouter();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [photos, setPhotos] = useState<string[]>([]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -68,12 +71,23 @@ const ThesisesPage = () => {
 
       console.log(messages);
 
-      const response = await axios.post('/api/', {
+      const response = await axios.post('/api/thesises', {
         messages: newMessages,
       });
+
       setMessages((current) => [...current, userMessage, response.data]);
 
-      form.reset();
+      setPhotos([]);
+
+      const response_image = await axios.post('/api/images', values.expertise);
+
+      const urls = response_image.data.map(
+        (image: { url: string }) => image.url
+      );
+
+      setPhotos(urls);
+
+      //form.reset();
     } catch (error: any) {
       if (error?.response?.status === 403) {
       } else {
@@ -241,6 +255,29 @@ const ThesisesPage = () => {
               </div>
             ))}
           </div>
+        </div>
+
+        {photos.length === 0 && !isLoading && (
+          <Empty label="No images generated." />
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
+          {photos.map((src) => (
+            <Card key={src} className="rounded-lg overflow-hidden">
+              <div className="relative aspect-square">
+                <Image fill alt="Generated" src={src} />
+              </div>
+              <CardFooter className="p-2">
+                <Button
+                  onClick={() => window.open(src)}
+                  variant="secondary"
+                  className="w-full"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
         </div>
       </div>
     </div>
