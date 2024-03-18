@@ -1,5 +1,6 @@
 import React from 'react';
 import { Files, Image } from 'lucide-react';
+import ImageGenerator from './ImageGenerator';
 
 interface ThesisItemProps {
   thesis: string;
@@ -49,7 +50,7 @@ const ThesisItem: React.FC<ThesisItemProps> = ({ thesis, lang, idx }) => {
         />
       </div>
       <div className="ml-6">
-        <Image />
+        <ImageGenerator thesis={thesis} />
       </div>
     </div>
   );

@@ -14,7 +14,6 @@ const ImageGenerator: React.FC<ImageGeneratorProps> = ({ thesis }) => {
   const generateImage = async () => {
     setIsGenerating(true);
     try {
-      // Adjust with your actual API endpoint and response structure
       const response = await axios.post<{ imageUrl: string }>(
         '/api/generate-image',
         { thesis }

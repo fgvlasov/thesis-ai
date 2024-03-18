@@ -9,12 +9,35 @@ import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Empty } from '@/components/ui/empty';
-import { Files } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import Link from 'next/link';
-import ThesisItem from '@/components/thesis-item';
+import ThesisItem from '@/components/ThesisItem';
+
+const mess = [
+  {
+    role: 'user',
+    content:
+      '"Imagine that you a teacher student tutor helping to student to write 3 examples \\n\\t\\tof Thesises (later in link i will insert this like a THESIS_TITLE) for diploma for Specialty: full-stack programming, for a student whom expertise is full stack developer, his interests are electronics, green energy, analyze existing topics on the Internet in the field of Research: software applications  and select the most relevant and relevant theses to modern trends.\\n\\t\\t Break your answer to a json object thesis_examples with brackets, no list numbers, because we will render it like json. \\n\\t\\t Also make second json list thesis_examples_translation with translation to finnish language. "',
+  },
+  {
+    role: 'assistant',
+    content:
+      '{\n  "thesis_examples": [\n    "The impact of green energy on software development practices in full-stack programming.",\n    "Exploring the integration of electronics into modern software applications for full-stack developers.",\n    "Analyzing the role of AI in optimizing software applications for green energy solutions in full-stack programming."\n  ],\n  "thesis_examples_translation": [\n    "Vihreän energian vaikutus ohjelmistokehityskäytäntöihin täysipinopinohjelmoinnissa.",\n    "Tutkimalla elektroniikan integrointia moderniin ohjelmistosovelluksiin täysipinopinohjelmoijille.",\n    "Analysoimalla tekoälyn rooli ohjelmistosovellusten optimoinnissa vihreiden energiaratkaisujen osalta täysipinopinohjelmoinnissa."\n  ]\n}',
+  },
+];
+// {
+//   "thesis_examples": [
+//     "The impact of green energy on software development practices in full-stack programming.",
+//     "Exploring the integration of electronics into modern software applications for full-stack developers.",
+//     "Analyzing the role of AI in optimizing software applications for green energy solutions in full-stack programming."
+//   ],
+//   "thesis_examples_translation": [
+//     "Vihreän energian vaikutus ohjelmistokehityskäytäntöihin täysipinopinohjelmoinnissa.",
+//     "Tutkimalla elektroniikan integrointia moderniin ohjelmistosovelluksiin täysipinopinohjelmoijille.",
+//     "Analysoimalla tekoälyn rooli ohjelmistosovellusten optimoinnissa vihreiden energiaratkaisujen osalta täysipinopinohjelmoinnissa."
+//   ]
+// }
 
 const formSchema = z.object({
   //   prompt: z.string().min(1, {
@@ -191,7 +214,7 @@ const ThesisesPage = () => {
             <Empty label="No conversation started." />
           )}
           <div className="flex flex-col-reverse gap-y-4">
-            {messages.map((message) => (
+            {mess.map((message) => (
               <div
                 key={message.content}
                 className="p-8 w-full flex flex-col items-start gap-x-8 rounded-lg"
