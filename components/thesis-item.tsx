@@ -1,5 +1,5 @@
 import React from 'react';
-import { Files } from 'lucide-react';
+import { Files, Image } from 'lucide-react';
 
 interface ThesisItemProps {
   thesis: string;
@@ -47,6 +47,9 @@ const ThesisItem: React.FC<ThesisItemProps> = ({ thesis, lang, idx }) => {
           onClick={() => copyTextToClipboard(thesis)}
           style={{ cursor: 'pointer' }}
         />
+      </div>
+      <div className="ml-6">
+        <Image />
       </div>
     </div>
   );
