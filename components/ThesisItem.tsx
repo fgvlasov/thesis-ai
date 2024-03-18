@@ -1,5 +1,6 @@
 import React from 'react';
-import { Files } from 'lucide-react';
+import { Files, Image } from 'lucide-react';
+import ImageGenerator from './ImageGenerator';
 
 interface ThesisItemProps {
   thesis: string;

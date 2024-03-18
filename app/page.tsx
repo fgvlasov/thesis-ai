@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-import ThesisItem from '@/components/thesis-item';
+import ThesisItem from '@/components/ThesisItem';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Download } from 'lucide-react';
 
@@ -77,16 +77,6 @@ const ThesisesPage = () => {
 
       setMessages((current) => [...current, userMessage, response.data]);
 
-      setPhotos([]);
-
-      const response_image = await axios.post('/api/images', values.expertise);
-
-      const urls = response_image.data.map(
-        (image: { url: string }) => image.url
-      );
-
-      setPhotos(urls);
-
       //form.reset();
     } catch (error: any) {
       if (error?.response?.status === 403) {
@@ -99,20 +89,12 @@ const ThesisesPage = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <h1 className="text-6xl font-bold uppercase text-center my-20 mx-10 text-gradient">
-        Generate thesis with AI
-      </h1>
-      <p className=" text-center my-20 mx-10">
-        We help to student generating three thesis ideas, giving you links to
-        find the same between other thesises and articles.
-      </p>
-      <div className="px-4 lg:px-8">
-        <div>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="
+    <>
+      <div>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="
                 w-full 
                 p-4 
                 px-3 
@@ -122,144 +104,145 @@ const ThesisesPage = () => {
                 grid-cols-12
                 gap-4
               "
+          >
+            {/* Specialty field */}
+            <FormField
+              name="specialty"
+              render={({ field }) => (
+                <FormItem className="col-span-12 md:col-span-6">
+                  <FormControl className="m-0 p-2">
+                    <Input
+                      disabled={isLoading}
+                      placeholder="Specialty"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            {/* Expertise field */}
+            <FormField
+              name="expertise"
+              render={({ field }) => (
+                <FormItem className="col-span-12 md:col-span-6">
+                  <FormControl className="m-0 p-2">
+                    <Input
+                      disabled={isLoading}
+                      placeholder="Expertise"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            {/* Interests field */}
+            <FormField
+              name="interests"
+              render={({ field }) => (
+                <FormItem className="col-span-12 md:col-span-6">
+                  <FormControl className="m-0 p-2">
+                    <Input
+                      disabled={isLoading}
+                      placeholder="Interests"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            {/* Field of Research */}
+            <FormField
+              name="fieldOfResearch"
+              render={({ field }) => (
+                <FormItem className="col-span-12 md:col-span-6">
+                  <FormControl className="m-0 p-2">
+                    <Input
+                      disabled={isLoading}
+                      placeholder="Field of Research"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Button
+              className="col-span-12 lg:col-span-4 lg:col-start-5 w-full bg-custom-gradient rounded-buttonRadius color-black text-1xl"
+              type="submit"
+              disabled={isLoading}
+              size="icon"
             >
-              {/* Specialty field */}
-              <FormField
-                name="specialty"
-                render={({ field }) => (
-                  <FormItem className="col-span-12 md:col-span-6">
-                    <FormControl className="m-0 p-2">
-                      <Input
-                        disabled={isLoading}
-                        placeholder="Specialty"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              {/* Expertise field */}
-              <FormField
-                name="expertise"
-                render={({ field }) => (
-                  <FormItem className="col-span-12 md:col-span-6">
-                    <FormControl className="m-0 p-2">
-                      <Input
-                        disabled={isLoading}
-                        placeholder="Expertise"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              {/* Interests field */}
-              <FormField
-                name="interests"
-                render={({ field }) => (
-                  <FormItem className="col-span-12 md:col-span-6">
-                    <FormControl className="m-0 p-2">
-                      <Input
-                        disabled={isLoading}
-                        placeholder="Interests"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              {/* Field of Research */}
-              <FormField
-                name="fieldOfResearch"
-                render={({ field }) => (
-                  <FormItem className="col-span-12 md:col-span-6">
-                    <FormControl className="m-0 p-2">
-                      <Input
-                        disabled={isLoading}
-                        placeholder="Field of Research"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <Button
-                className="col-span-12 lg:col-span-4 lg:col-start-5 w-full bg-custom-gradient rounded-buttonRadius color-black text-1xl"
-                type="submit"
-                disabled={isLoading}
-                size="icon"
-              >
-                GENERATE
-              </Button>
-            </form>
-          </Form>
-        </div>
+              GENERATE
+            </Button>
+          </form>
+        </Form>
+      </div>
 
-        <div className="space-y-4 mt-4">
-          {isLoading && (
-            <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
-              Loading...
-            </div>
-          )}
-          {messages.length === 0 && !isLoading && (
-            <Empty label="No conversation started." />
-          )}
-          <div className="flex flex-col-reverse gap-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.content}
-                className="p-8 w-full flex flex-col items-start gap-x-8 rounded-lg"
-              >
-                {(() => {
-                  try {
-                    const jsonData = JSON.parse(message.content);
-                    return (
-                      <>
-                        <div>
-                          <h3 className="text-lg font-bold my-4 mx-12">
-                            Thesis Examples:
-                          </h3>
-
-                          {jsonData.thesis_examples?.map(
-                            (thesis: string, idx: number) => (
-                              <ThesisItem
-                                thesis={thesis}
-                                idx={idx}
-                                lang="en"
-                                key={idx}
-                              />
-                            )
-                          )}
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-bold my-4 mx-12">
-                            Thesis Examples in Finnish:
-                          </h3>
-                          {jsonData.thesis_examples_translation?.map(
-                            (translation: string, idx: number) => (
-                              <ThesisItem
-                                thesis={translation}
-                                idx={idx}
-                                lang="fi"
-                                key={idx}
-                              />
-                            )
-                          )}
-                        </div>
-                      </>
-                    );
-                  } catch (e) {
-                    return <p>Error parsing AI response.</p>;
-                  }
-                })()}
-              </div>
-            ))}
+      <div className="space-y-4 mt-4">
+        {isLoading && (
+          <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
+            Loading...
           </div>
-        </div>
-
-        {photos.length === 0 && !isLoading && (
-          <Empty label="No images generated." />
         )}
+        {messages.length === 0 && !isLoading && (
+          <Empty label="No conversation started." />
+        )}
+        <div className="flex flex-col-reverse gap-y-4">
+          {messages.map((message) => (
+            <div
+              key={message.content}
+              className="p-8 w-full flex flex-col items-start gap-x-8 rounded-lg"
+            >
+              {(() => {
+                try {
+                  const jsonData = JSON.parse(message.content);
+                  return (
+                    <>
+                      <div>
+                        <h3 className="text-lg font-bold my-4 mx-12">
+                          Thesis Examples:
+                        </h3>
+
+                        {jsonData.thesis_examples?.map(
+                          (thesis: string, idx: number) => (
+                            <ThesisItem
+                              thesis={thesis}
+                              idx={`en-${idx}`}
+                              lang="en"
+                              key={`en-${idx}`}
+                            />
+                          )
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold my-4 mx-12">
+                          Thesis Examples in Finnish:
+                        </h3>
+                        {jsonData.thesis_examples_translation?.map(
+                          (translation: string, idx: number) => (
+                            <ThesisItem
+                              thesis={translation}
+                              idx={`fi-${idx}`}
+                              lang="fi"
+                              key={`fi-${idx}`}
+                            />
+                          )
+                        )}
+                      </div>
+                    </>
+                  );
+                } catch (e) {
+                  return <p>Error parsing AI response.</p>;
+                }
+              })()}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* {photos.length === 0 && !isLoading && (
+        <Empty label="No images generated." />
+      )} */}
+      {photos.length && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
           {photos.map((src) => (
             <Card key={src} className="rounded-lg overflow-hidden">
@@ -279,8 +262,8 @@ const ThesisesPage = () => {
             </Card>
           ))}
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

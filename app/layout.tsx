@@ -21,8 +21,16 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={font.className}>
         <ToasterProvider />
-
-        {children}
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-6xl font-bold uppercase text-center my-20 mx-10 text-gradient">
+            Generate thesis with AI
+          </h1>
+          <p className=" text-center my-20 mx-10">
+            We help to student generating three thesis ideas, giving you links
+            to find the same between other thesises and articles.
+          </p>
+          <div className="px-4 lg:px-8">{children}</div>
+        </div>
       </body>
     </html>
   );
