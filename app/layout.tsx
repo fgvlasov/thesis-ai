@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Montserrat } from 'next/font/google';
-
+import { ClerkProvider } from '@clerk/nextjs';
 import { ToasterProvider } from '@/components/toaster-provider';
 
 import './globals.css';
@@ -18,12 +18,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={font.className}>
-        <ToasterProvider />
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body className={font.className}>
+          <ToasterProvider />
 
-        {children}
-      </body>
-    </html>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
